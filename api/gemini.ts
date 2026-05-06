@@ -24,11 +24,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const genAI = new GoogleGenAI({ apiKey });
     const modelName = model || "gemini-1.5-flash";
     
+    // Merge system instruction into the first message for better compatibility
+    const finalContents = [...contents];
+    if (config?.systemInstruction) {
+      finalContents.unshift({
+        role: "user",
+        parts: [{ text: `SYSTEM INSTRUCTION: ${config.systemInstruction}\n\nPlease follow this instruction for the entire conversation.` }]
+      });
+      // Add a dummy model response to keep the user/model alternation if needed
+      finalContents.splice(1, 0, {
+        role: "model",
+        parts: [{ text: "Understood. I will follow those instructions." }]
+      });
+    }
+
     const result = await genAI.models.generateContent({
       model: modelName,
-      contents,
+      contents: finalContents,
       config: {
-        systemInstruction: config?.systemInstruction,
         temperature: config?.temperature ?? 0.7,
       }
     });
