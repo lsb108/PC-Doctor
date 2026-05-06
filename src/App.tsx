@@ -51,9 +51,7 @@ export default function App() {
 
   const initCamera = async () => {
     try {
-      // Clean up any old streams first
       stopCamera();
-
       const constraints = {
         video: {
           facingMode: (window.innerWidth < 768) ? { ideal: 'environment' } : 'user',
@@ -64,10 +62,6 @@ export default function App() {
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
       setView('scan');
     } catch (err) {
       console.error("Camera access failed:", err);
@@ -167,14 +161,22 @@ export default function App() {
     </div>
   );
 
-  const ScanView = () => (
-    <div className="flex-1 relative flex flex-col bg-black">
-      <video 
-        ref={videoRef} 
-        autoPlay 
-        playsInline 
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+  const ScanView = () => {
+    useEffect(() => {
+      if (videoRef.current && streamRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+      }
+    }, []);
+
+    return (
+      <div className="flex-1 relative flex flex-col bg-black">
+        <video 
+          ref={videoRef} 
+          autoPlay 
+          playsInline 
+          muted
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       
       {/* HUD Elements */}
       <div className="viewfinder-corner top-left"></div>
