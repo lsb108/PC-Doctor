@@ -98,7 +98,7 @@ export default function App() {
     try {
       const constraints = { 
         video: { 
-          facingMode: 'environment', // using simpler constraint first
+          facingMode: (window.innerWidth < 768) ? { ideal: 'environment' } : 'user',
           width: { ideal: 1280 },
           height: { ideal: 720 }
         } 
@@ -109,6 +109,7 @@ export default function App() {
     } catch (err) {
       console.error("Camera error:", err);
       try {
+        // Ultimate fallback: any video device
         const s = await navigator.mediaDevices.getUserMedia({ video: true });
         setStream(s);
         setCurrentView('camera');

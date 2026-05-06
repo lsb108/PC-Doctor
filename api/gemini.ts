@@ -24,22 +24,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const genAI = new GoogleGenAI({ apiKey });
     const modelName = model || "gemini-1.5-flash";
     
-    const genModel = genAI.getGenerativeModel({
+    const result = await genAI.models.generateContent({
       model: modelName,
-      systemInstruction: config?.systemInstruction,
-    });
-
-    const result = await genModel.generateContent({
       contents,
-      generationConfig: {
+      config: {
+        systemInstruction: config?.systemInstruction,
         temperature: config?.temperature ?? 0.7,
       }
     });
 
-    const response = await result.response;
-    const text = response.text();
-
-    res.status(200).json({ text });
+    res.status(200).json({ text: result.text });
   } catch (error: any) {
     console.error("Vercel Gemini Error:", error);
     res.status(500).json({ 
