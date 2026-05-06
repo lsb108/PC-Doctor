@@ -1,0 +1,6 @@
+{
+  "name": "PC Doc - Bác sĩ Máy tính",
+  "description": "Ứng dụng chẩn đoán và sửa lỗi PC bằng AI và Camera, giao diện phong cách iPhone.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["AI Diagnostics", "Camera Inspection"]
+}
