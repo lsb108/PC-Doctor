@@ -214,7 +214,8 @@ export default function App() {
 
       <canvas ref={canvasRef} className="hidden" />
     </div>
-  );
+    );
+  };
 
   const DiagnosisView = () => (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0a0c10]">
